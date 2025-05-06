@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Optivenue Admin Panel</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-5">
+  <h1 class="mb-4">Booked Events :: Optivenue</h1>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="alert alert-info">
+        {% for msg in messages %}
+          <div>{{ msg }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="mb-3">
+    <a href="{{ url_for('book_event') }}" class="btn btn-success">Book New Event</a>
+    <a href="{{ url_for('upload_data') }}" class="btn btn-secondary">Upload Data</a>
+  </div>
+
+  {% if events %}
+    <table class="table table-bordered table-striped align-middle">
+      <thead class="table-light">
+        <tr>
+          <th scope="col">Event type</th>
+          <th scope="col">Venue</th>
+          <th scope="col">Start time</th>
+          <th scope="col">Duration (hours)</th>
+          <th scope="col">Participants</th>
+          <th scope="col">Personnel used</th>
+          <th scope="col">Booked at</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for event in events %}
+          <tr>
+            <td>{{ event.event_type }}</td>
+            <td>{{ event.venue.name }}</td>
+            <td>{{ event.start_time.strftime("%H:%M (%d %B %Y)") }}</td>
+            <td>{{ event.duration_hours }}</td>
+            <td>{{ event.participants }}</td>
+            <td>{{ event.venue.personnel_required }}</td>
+            <td>{{ event.created_at.strftime("%H:%M, %d %B %Y") if event.created_at else "" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No events booked yet. Use the button above to create one.</p>
+  {% endif %}
+
+
+  <h2 class="mt-5">Venues</h2>
+  <table class="table table-bordered table-sm">
+    <thead class="table-light">
+      <tr>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Capacity</th>
+        <th>Personnel Required</th>
+        <th>Open Time</th>
+        <th>Close Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for v in venues %}
+        <tr>
+          <td>{{ v.name }}</td>
+          <td>{{ v.location.name }}</td>
+          <td>{{ v.capacity }}</td>
+          <td>{{ v.personnel_required }}</td>
+          <td>{{ v.open_time.strftime("%H:%M") }}</td>
+          <td>{{ v.close_time.strftime("%H:%M") }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 class="mt-5">Personnel Availability</h2>
+  <table class="table table-bordered table-sm">
+    <thead class="table-light">
+      <tr><th>Month</th><th>Available Personnel</th></tr>
+    </thead>
+    <tbody>
+      {% for p in personnel %}
+        <tr>
+          <td>{{ p.month }}</td>
+          <td>{{ p.available_personnel }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</body>
+</html>
